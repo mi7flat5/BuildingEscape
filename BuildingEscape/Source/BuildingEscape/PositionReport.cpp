@@ -19,7 +19,11 @@ UPositionReport::UPositionReport()
 void UPositionReport::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT("Position report reporting for duty on: %s"), *GetOwner()->GetName());
+	FString ownerName = GetOwner()->GetName();
+	FTransform transform = GetOwner()->GetTransform();
+	FVector position = transform.GetLocation();
+	FString objectPos = "X = " + FString::SanitizeFloat(position.X) + " Y = " + FString::SanitizeFloat(position.Y) + " Z = " + FString::SanitizeFloat(position.Z);
+	UE_LOG(LogTemp, Warning, TEXT("Position report reporting for duty on: %s %s"), *ownerName, *objectPos)
 	// ...
 	
 }
