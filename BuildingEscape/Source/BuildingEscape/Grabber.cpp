@@ -1,5 +1,5 @@
 // Copyright Shane Harmon 2016
-
+#define OUT
 #include "BuildingEscape.h"
 #include "Grabber.h"
 
@@ -29,7 +29,22 @@ void UGrabber::BeginPlay()
 void UGrabber::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
+	FVector position;
+	FRotator rotation;
 
-	// ...
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
+		OUT position,
+		OUT rotation);
+
+	/*UE_LOG(LogTemp, 
+		Warning,
+		TEXT("Player Position %s Rotation %s"),
+		*position.ToString(),
+		*rotation.ToString()
+		)*/
+	
+	FVector lineTrace = position + (rotation.Vector() *reach);
+
+	DrawDebugLine(GetWorld(),position,lineTrace,FColor(255,0,0),false,0.0f,0.0f,12.0f);
 }
 
