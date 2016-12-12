@@ -32,6 +32,7 @@ private:
 	
 	float lastDoorOpenTime;
 
+
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* pressurePlate;
 
