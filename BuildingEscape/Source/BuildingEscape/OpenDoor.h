@@ -18,6 +18,8 @@ public:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	float GetTotlMassOnPlate();
+
 	void OpenDoor();
 	void CloseDoor();
 	// Called every frame
@@ -34,11 +36,13 @@ private:
 
 
 	UPROPERTY(EditAnywhere)
-	ATriggerVolume* pressurePlate;
+	ATriggerVolume* pressurePlate = nullptr;
 
-	UPROPERTY(VisibleAnywhere)
-	AActor* actorThatOpens;
+	//UPROPERTY(VisibleAnywhere)
+	
+	UPROPERTY(EditAnywhere)
+	float triggerMass = 90.0f;
 
-	AActor* owner;
+	AActor* owner = nullptr;
 	
 };
