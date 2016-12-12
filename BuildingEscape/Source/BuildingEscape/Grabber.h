@@ -34,8 +34,9 @@ private:
 	//Ray cast adn grab physics objects within reach
 	void Grab();
 	void Release();
+	FHitResult GetLineHit();
+	
 	FVector GetLineTraceEnd();
-	bool holding = false;
-	FVector lineTrace;
+	
 	
 };

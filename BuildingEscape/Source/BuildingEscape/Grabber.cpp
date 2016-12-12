@@ -26,37 +26,45 @@ void UGrabber::BeginPlay()
 void UGrabber::Grab() 
 {
 	UE_LOG(LogTemp, Error, TEXT("Grabber pressed"))
+		
+	FHitResult hit = GetLineHit();
+	
+	if (hit.GetActor())
+	UE_LOG(LogTemp, Warning, TEXT("Hitting %s"), *hit.GetActor()->GetName())
+	
+	if (hit.GetActor()) 
+	{
+		auto ComponenToGrab = hit.GetComponent();
+		physicsHandle->GrabComponent(ComponenToGrab, NAME_None, ComponenToGrab->GetOwner()->GetActorLocation(), true);
+	}
+}
+void UGrabber::Release()
+{
+
+	physicsHandle->ReleaseComponent();
+	UE_LOG(LogTemp, Error, TEXT("Grabber released"))
+
+}
+FHitResult UGrabber::GetLineHit()
+{
 	FVector position;
 	FRotator rotation;
 
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
 		OUT position,
 		OUT rotation);
-
-
-
+	FHitResult hitResult;
 	
-
 	FCollisionQueryParams traceparams = FCollisionQueryParams(FName(TEXT("")), false, GetOwner());
+	
+	GetWorld()->LineTraceSingleByObjectType(OUT hitResult,
+		position, GetLineTraceEnd(), 
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody), 
+		traceparams
+		);
+	return hitResult;
+}
 
-	DrawDebugLine(GetWorld(), position, GetLineTraceEnd(), FColor(255, 0, 0), false, 0.0f, 0.0f, 12.0f);
-	FHitResult hit;
-	GetWorld()->LineTraceSingleByObjectType(OUT hit, position, GetLineTraceEnd(), FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody), traceparams);
-	if (hit.GetActor())
-		UE_LOG(LogTemp, Warning, TEXT("Hitting %s"), *hit.GetActor()->GetName())
-		if (hit.GetActor()) {
-			auto ComponenToGrab = hit.GetComponent();
-			physicsHandle->GrabComponent(ComponenToGrab, NAME_None, ComponenToGrab->GetOwner()->GetActorLocation(), true);
-			
-		}
-}
-void UGrabber::Release() 
-{	
-	
-		physicsHandle->ReleaseComponent();
-		UE_LOG(LogTemp, Error, TEXT("Grabber released"))
-	
-}
 FVector UGrabber::GetLineTraceEnd()
 {
 	FVector position;
@@ -75,7 +83,6 @@ void UGrabber::TickComponent( float DeltaTime, ELevelTick TickType, FActorCompon
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
 
 	
-
 	if(physicsHandle->GrabbedComponent)
 	{
 		
