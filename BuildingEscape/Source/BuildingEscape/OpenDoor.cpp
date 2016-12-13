@@ -22,6 +22,10 @@ void UOpenDoor::BeginPlay()
 	
 	owner = GetOwner();
 	
+	if (!pressurePlate)
+	{
+		UE_LOG(LogTemp, Error, TEXT("TriggerVolume not assigned to %s"), *owner->GetName())
+	}
 	
 }
 
@@ -32,31 +36,20 @@ void UOpenDoor::BeginPlay()
 void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
+	
 	if (!pressurePlate)
-	{
-		UE_LOG(LogTemp, Error, TEXT("TriggerVolume not assigned to %s"), *owner->GetName())
 		return;
-	}
+
 	if (GetTotlMassOnPlate()>triggerMass)
 	{
-		OpenDoor();
-		lastDoorOpenTime = GetWorld()->GetTimeSeconds();
+		onOpen.Broadcast();
+		
 	}
+	else onClose.Broadcast();
 	
-	if (GetWorld()->GetTimeSeconds() - lastDoorOpenTime > doorCloseDelay) 
-	{
-		CloseDoor();
-	}
 	// ...
 }
-void UOpenDoor::OpenDoor()
-{
-	owner->SetActorRotation(FRotator(0.0f, openAngle, 0.0f));
-}
-void UOpenDoor::CloseDoor()
-{
-	owner->SetActorRotation(FRotator(0.0f, 0, 0.0f));
-}
+
 float UOpenDoor::GetTotlMassOnPlate()
 {
 
